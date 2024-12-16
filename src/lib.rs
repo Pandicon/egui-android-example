@@ -1,11 +1,41 @@
-use eframe::{NativeOptions};
+use eframe::{egui, NativeOptions};
 
 fn _main(options: NativeOptions) {
-    let mut demo = egui_demo_lib::DemoWindows::default();
+    match eframe::run_native("Test app", options, Box::new(|_cc| Ok(Box::new(Application::new())))) {
+		Ok(_) => log::info!("Finished with no issues"),
+		Err(err) => { log::error!("Finished with an error: {err:?}"); panic!("Finished with an error: {:?}", err) }
+	};
+}
 
-    eframe::run_simple_native("egui mobile example", options, move |ctx, _frame| {
-        demo.ui(ctx);
-    }).unwrap();
+struct Application {
+}
+
+impl Application {
+    pub fn new() -> Self {
+		Self {}
+	}
+}
+
+impl eframe::App for Application {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+		egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
+            egui::menu::bar(ui, |ui| {
+                ui.label("Some text here :D");
+				if ui.button("Some button to see if the app is responding").clicked() {
+					log::warn!("Button clicked");
+				};
+            });
+        });
+        ctx.request_repaint();
+    }
+
+    fn save(&mut self, _storage: &mut dyn eframe::Storage) {
+		log::error!("Saving!");
+    }
+
+    fn on_exit(&mut self) {
+		log::error!("Exiting!");
+    }
 }
 
 
@@ -46,16 +76,14 @@ pub fn main() {
 #[cfg(target_os = "android")]
 #[no_mangle]
 fn android_main(app: winit::platform::android::activity::AndroidApp) {
-    use winit::platform::android::EventLoopBuilderExtAndroid;
-
     android_logger::init_once(
         android_logger::Config::default().with_max_level(log::LevelFilter::Warn),
     );
 
     let mut opts = NativeOptions::default();
-    opts.event_loop_builder = Some(Box::new(move |el| {
-        el.with_android_app(app);
-    }));
+	opts.android_app = Some(app);
+	let default_path = format!("/storage/emulated/0/Android/data/io.hellopaint.egui.egui_mobile_test/files/save.ron");
+    opts.persistence_path = Some(default_path.into());
 
     stop_unwind(|| _main(opts));
 }

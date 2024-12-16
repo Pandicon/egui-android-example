@@ -1,8 +1,8 @@
 [package]
 name = "egui-mobile-test"
 version = "0.1.0"
-authors = ["Lucas Meurer <lucasmeurer96@gmail.com>"]
-edition = "2018"
+authors = ["Lucas Meurer <lucasmeurer96@gmail.com>", "Pandicon <70060103+Pandicon@users.noreply.github.com>"]
+edition = "2021"
 resolver = "2"
 
 [lib]
@@ -13,19 +13,17 @@ name = "egui-mobile-test-desktop"
 path = "gen/bin/desktop.rs"
 
 [package.metadata.cargo-android]
-app-dependencies = [
-    "com.google.android.material:material:1.8.0",
-]
-project-dependencies = [ "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21" ]
-app-plugins = [ "org.jetbrains.kotlin.android" ]
+app-dependencies = ["com.google.android.material:material:1.8.0"]
+project-dependencies = ["org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21"]
+app-plugins = ["org.jetbrains.kotlin.android"]
 app-theme-parent = "Theme.MaterialComponents.DayNight.DarkActionBar"
 
 [dependencies]
 log = "0.4.14"
 chrono = "0.4"
-eframe = { version = "0.28", default-features = false, features = ["wgpu", "default_fonts", "android-native-activity"] }
-egui_demo_lib = "0.28"
-winit = "0.30"
+eframe = { version = "0.30", default-features = false, features = ["wgpu", "default_fonts", "persistence", "android-native-activity"] }
+egui_demo_lib = "0.30"
+winit = "0.30.5"
 
 [target.'cfg(target_os = "android")'.dependencies]
 android_logger = "0.13.1"
@@ -34,8 +32,11 @@ android_logger = "0.13.1"
 env_logger = "0.9"
 
 [patch.crates-io]
-eframe = { git = "https://github.com/lucasmerlin/egui", branch = "add-ios-pipeline"}
-egui_demo_lib = { git = "https://github.com/lucasmerlin/egui", branch = "add-ios-pipeline"}
+eframe = { git = "https://github.com/emilk/egui", branch = "master" }
+egui_demo_lib = { git = "https://github.com/emilk/egui", branch = "master" }
+
+[profile.dev]
+debug-assertions = false # You can then enable them specifically for your crate, but there is something with starting up an Android application that causes a debug assertion to fail
 
 #eframe = {git = "https://github.com/emilk/egui", branch = "master"}
 #
