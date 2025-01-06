@@ -33,7 +33,7 @@ impl eframe::App for Application {
 		log::error!("Saving!");
     }
 
-    fn on_exit(&mut self) {
+    fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
 		log::error!("Exiting!");
     }
 }
